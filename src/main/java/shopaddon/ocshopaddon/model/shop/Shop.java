@@ -10,20 +10,21 @@ public class Shop {
     private ProtectedRegion region;
     private final String UID;
     private String shopName;
-    private Player owner;
+    private String ownerUUID;
     private final ArrayList<String> members;
 
     public Shop(ProtectedRegion region) {
         this.UID = region.getId();
         members = new ArrayList<>();
+        ownerUUID = "server";
         this.region = region;
     }
 
-    public Shop(ProtectedRegion region, Player owner, String shopName) {
+    public Shop(ProtectedRegion region, String ownerUUID, String shopName) {
         this.UID = region.getId();
         members = new ArrayList<>(region.getMembers().getPlayers());
         this.region = region;
-        this.owner = owner;
+        this.ownerUUID = ownerUUID;
         this.shopName = shopName;
     }
 
@@ -35,20 +36,16 @@ public class Shop {
         return UID;
     }
 
-    public Player getOwner() {
-        return owner;
+    public String getOwnerUUID() {
+        return ownerUUID;
     }
 
     public String getShopName() {
         return shopName;
     }
 
-    public String getRegionId() {
-        return region.getId();
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
+    public void setOwnerUUID(String ownerUUID) {
+        this.ownerUUID = ownerUUID;
     }
 
     public void setRegion(ProtectedRegion region) {

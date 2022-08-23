@@ -1,7 +1,9 @@
 package shopaddon.ocshopaddon.core;
 
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import shopaddon.ocshopaddon.OcShopAddon;
+import shopaddon.ocshopaddon.model.database.DatabaseCommunicator;
 import shopaddon.ocshopaddon.model.shop.ShopModel;
 
 import java.util.concurrent.locks.Lock;
@@ -31,8 +33,8 @@ public class EventHandler implements Listener {
     }
 
     @org.bukkit.event.EventHandler
-    public void onPlayerJoinEvent() {
-
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
+        DatabaseCommunicator.checkPlayer(event.getPlayer());
     }
 
 }

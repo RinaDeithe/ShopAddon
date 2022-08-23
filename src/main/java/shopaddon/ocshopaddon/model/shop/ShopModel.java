@@ -19,4 +19,6 @@ public interface ShopModel {
     ArrayList<Shop> getShopList();
 
     void setName(Player player, String currentUID, String newUID);
+
+    void resetShops(Player player);
 }

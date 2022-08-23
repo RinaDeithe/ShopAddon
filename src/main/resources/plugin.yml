@@ -9,6 +9,9 @@ commands:
     permission: admin
     permission-message: Bugger off
     usage: /<command> [create/remove/addregion] (region)
+  shop:
+    description: Commands for users.
+    usage: /<command> [buy/sell/rename/show]
 permissions:
   admin:
     description: Fuck off

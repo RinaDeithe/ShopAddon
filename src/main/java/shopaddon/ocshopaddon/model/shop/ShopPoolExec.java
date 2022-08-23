@@ -1,13 +1,11 @@
 package shopaddon.ocshopaddon.model.shop;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import shopaddon.ocshopaddon.core.RegionHandler;
 import shopaddon.ocshopaddon.model.database.DataModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ShopPoolExec implements ShopPool{
 
@@ -39,7 +37,7 @@ public class ShopPoolExec implements ShopPool{
     @Override
     public Shop getShop(Player player) {
         for (Shop index : dataModel.getShopList()) {
-            if (index.getOwner().equals(player))
+            if (index.getOwnerUUID().equals(player.getUniqueId().toString()))
                 return index;
         }
         return null;
@@ -48,7 +46,7 @@ public class ShopPoolExec implements ShopPool{
     @Override
     public void setOwner(Player player, String shopUID) {
         Shop shop = dataModel.getShop(shopUID);
-        shop.setOwner(player);
+        shop.setOwnerUUID(player.getUniqueId().toString());
 
         dataModel.updateShop(shop);
     }
@@ -56,7 +54,7 @@ public class ShopPoolExec implements ShopPool{
     @Override
     public void removeOwner(Player owner, String shopUID) {
         Shop shop = dataModel.getShop(shopUID);
-        shop.setOwner(null);
+        shop.setOwnerUUID("server");
 
         dataModel.updateShop(shop);
     }
@@ -72,5 +70,18 @@ public class ShopPoolExec implements ShopPool{
     @Override
     public ArrayList<Shop> getShopList() {
         return dataModel.getShopList();
+    }
+
+    @Override
+    public void setName(Player player, String currentID, String newID) {
+        Shop shop = dataModel.getShop(currentID);
+        shop.setShopName(newID);
+
+        dataModel.updateShop(shop);
+    }
+
+    @Override
+    public void resetShops(Player player) {
+        dataModel.resetShops();
     }
 }
