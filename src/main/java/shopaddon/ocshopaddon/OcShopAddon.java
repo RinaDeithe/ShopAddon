@@ -17,6 +17,15 @@ public final class OcShopAddon extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
+        this.saveDefaultConfig();
+
+        ConnectionHandler.adress = this.getConfig().getString("postgresql.adress");
+        ConnectionHandler.port = this.getConfig().getString("postgresql.port");
+        ConnectionHandler.user = this.getConfig().getString("postgresql.user");
+        ConnectionHandler.pass = this.getConfig().getString("postgresql.password");
+        ConnectionHandler.dataBase = this.getConfig().getString("postgresql.database");
+
         if (!setupEconomy() ) {
             log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);

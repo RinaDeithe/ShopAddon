@@ -31,8 +31,6 @@ public class AdminCommand {
             return false;
         }
 
-        System.out.println(command.getName());
-
         if (strings[0].equalsIgnoreCase("remove")) {
             removeShop(admin, strings);
             return true;
@@ -52,6 +50,10 @@ public class AdminCommand {
             admin.sendMessage(returnString.toString());
             return true;
         }
+        else if (strings[0].equalsIgnoreCase("expired")) {
+            resetShops(admin);
+            return true;
+        }
         else if (strings[0].equalsIgnoreCase("setregion") && strings.length > 2) {
             setRegion(admin, strings);
             return true;
@@ -59,6 +61,10 @@ public class AdminCommand {
         else
             return false;
 
+    }
+
+    private void resetShops(Player player) {
+        shopModel.resetShops(player);
     }
 
     private void setRegion(Player player, String[] strings) {

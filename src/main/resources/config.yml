@@ -1,0 +1,7 @@
+#Currently only works with PostgreSQL. NoSQL planned for the future
+postgresql:
+  adress: #0.0.0.0
+  port: #5432
+  user: #postgres
+  password: #123456789
+  database: #postgres

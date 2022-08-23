@@ -11,9 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ModelFactory {
 
     private static ModelFactory instance;
-    private final DataModel dataModel = new DatabaseCommunicator(
-            ConnectionHandler.getInstance().getConnection()
-    );
+    private final DataModel dataModel = new DatabaseCommunicator();
     private final ShopModel shopModel = new ShopManager(dataModel);
     private static final Lock lock = new ReentrantLock();
 

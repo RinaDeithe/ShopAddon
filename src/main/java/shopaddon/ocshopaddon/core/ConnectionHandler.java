@@ -13,11 +13,11 @@ public class ConnectionHandler {
     private static final Lock lock = new ReentrantLock();
 
     private static Connection connection;
-    private static String adress = "135.148.53.116";
-    private static String port = "5432";
-    private static String user = "postgres";
-    private static String pass = "fhurybsfnejifh34729d";
-    private static String dataBase = "postgres";
+    public static String adress = "135.148.53.116";
+    public static String port = "5432";
+    public static String user = "postgres";
+    public static String pass = "fhurybsfnejifh34729d";
+    public static String dataBase = "postgres";
 
     public static ConnectionHandler getInstance() {
         if (instance == null) {
@@ -31,6 +31,10 @@ public class ConnectionHandler {
     }
 
     private ConnectionHandler() {
+        connect();
+    }
+
+    public void connect() {
         try {
             Class.forName("org.postgresql.Driver");
 

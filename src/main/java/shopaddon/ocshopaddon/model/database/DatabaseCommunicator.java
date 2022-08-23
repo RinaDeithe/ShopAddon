@@ -1,7 +1,7 @@
 package shopaddon.ocshopaddon.model.database;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import shopaddon.ocshopaddon.core.ConnectionHandler;
 import shopaddon.ocshopaddon.core.RegionHandler;
 import shopaddon.ocshopaddon.model.shop.Shop;
 
@@ -10,11 +10,10 @@ import java.util.ArrayList;
 
 public class DatabaseCommunicator implements DataModel {
 
-    private static Connection connection;
+    private static final Connection connection = ConnectionHandler.getInstance().getConnection();
 
-    public DatabaseCommunicator(Connection connection) {
+    public DatabaseCommunicator() {
         try {
-            DatabaseCommunicator.connection = connection;
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,7 +61,7 @@ public class DatabaseCommunicator implements DataModel {
             while (resultSet.next()) {
                 shop = new Shop(
                         RegionHandler.getRegion(resultSet.getString("shop_name")),
-                        Bukkit.getPlayer(resultSet.getString("owner")),
+                        resultSet.getString("owner"),
                         resultSet.getString("shop_nick")
                 );
             }
@@ -134,8 +133,8 @@ public class DatabaseCommunicator implements DataModel {
 
         try {
             PreparedStatement stmt = connection.prepareStatement("""
-                    insert into shopaddon.player(uuid)
-                    values (%s);
+                    insert into shopaddon.player(uuid, inactive_days)
+                    values (%s, 0);
                     """.formatted(player.getUniqueId().toString()));
 
             stmt.executeUpdate();
@@ -164,7 +163,7 @@ public class DatabaseCommunicator implements DataModel {
             while (resultSet.next()) {
                 shopList.add(new Shop(
                         RegionHandler.getRegion(resultSet.getString("shop_name")),
-                        Bukkit.getPlayer(resultSet.getString("owner")),
+                        resultSet.getString("owner"),
                         resultSet.getString("shop_nick")
                 ));
             }
@@ -205,7 +204,7 @@ public class DatabaseCommunicator implements DataModel {
                 owner = '%s'
             where
                 shop_uid = '%s';
-            """.formatted(shop.getShopName(), shop.getOwner().getUniqueId().toString(), shop.getShopUID());
+            """.formatted(shop.getShopName(), shop.getOwnerUUID(), shop.getShopUID());
 
         try {
 
@@ -213,6 +212,37 @@ public class DatabaseCommunicator implements DataModel {
 
             stmt.executeUpdate();
             stmt.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void resetShops() {
+
+        ArrayList<String> expiredUUID = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = connection.prepareStatement("""
+                select * from shopaddon.player
+                where inactive_days > 30
+                """).executeQuery();
+
+            while (resultSet.next()) {
+                expiredUUID.add(resultSet.getString("uuid"));
+            }
+
+            for (String index : expiredUUID) {
+                PreparedStatement prestmt = connection.prepareStatement("""
+                    update shopaddon.shop set owner = 'server'
+                    where owner = %s
+                        """.formatted(index)
+                );
+
+                prestmt.executeUpdate();
+
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

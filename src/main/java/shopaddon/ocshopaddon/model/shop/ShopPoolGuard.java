@@ -22,7 +22,7 @@ public class ShopPoolGuard implements ShopPool{
         ArrayList<Shop> list = dataModel.getShopList();
 
         for (Shop index : list) {
-            if (index.getOwner().equals(player)) {
+            if (index.getOwnerUUID().equals(player.getUniqueId().toString())) {
                 Feedback.INSTANCE.ShopAlreadyExists(player);
                 return;
             }
@@ -37,7 +37,7 @@ public class ShopPoolGuard implements ShopPool{
         ArrayList<Shop> list = dataModel.getShopList();
 
         for (Shop index : list) {
-            if (index.getOwner().equals(player)) {
+            if (index.getOwnerUUID().equals(player.getUniqueId().toString())) {
                 executor.removeShop(player, shopUID);
                 return;
             }
@@ -63,7 +63,7 @@ public class ShopPoolGuard implements ShopPool{
         ArrayList<Shop> list = dataModel.getShopList();
 
         for (Shop index : list) {
-            if (index.getOwner().equals(player)) {
+            if (index.getOwnerUUID().equals(player.getUniqueId().toString())) {
                 return executor.getShop(player);
             }
         }
@@ -127,12 +127,17 @@ public class ShopPoolGuard implements ShopPool{
 
         for (Shop index : list) {
             if (index.getShopUID().equals(currentID)) {
-                Feedback.INSTANCE.shopRenamed(newID);
+                Feedback.INSTANCE.shopRenamed(player, newID);
                 executor.setName(player, currentID, newID);
                 return;
             }
         }
 
         Feedback.INSTANCE.shopNotFound(player);
+    }
+
+    @Override
+    public void resetShops(Player player) {
+        executor.resetShops(player);
     }
 }

@@ -61,4 +61,9 @@ public class ShopManager implements ShopModel{
     public void setName(Player player, String currentID, String newID) {
         pool.setName(player, currentID, newID);
     }
+
+    @Override
+    public void resetShops(Player player) {
+        pool.resetShops(player);
+    }
 }

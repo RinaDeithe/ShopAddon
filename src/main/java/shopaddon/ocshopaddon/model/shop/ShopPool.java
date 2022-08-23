@@ -16,4 +16,6 @@ public interface ShopPool {
     ArrayList<Shop> getShopList();
 
     void setName(Player player, String currentID, String newID);
+
+    void resetShops(Player player);
 }

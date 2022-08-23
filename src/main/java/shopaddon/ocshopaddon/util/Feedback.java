@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 public enum Feedback {
     INSTANCE;
 
-    private String PREFIX = "[OC] ";
+    private final String PREFIX = "[OC] ";
 
     public void shopBought(Player player) {
         player.sendMessage(PREFIX + "Successfully bought a shop");
@@ -40,8 +40,10 @@ public enum Feedback {
     }
 
     public void notEnoughCash(Player player) {
+        player.sendMessage(PREFIX + "Get back when you have more cash.");
     }
 
-    public void shopRenamed(String newID) {
+    public void shopRenamed(Player player, String newID) {
+        player.sendMessage(PREFIX + "Renamed shop to " + newID);
     }
 }
