@@ -15,5 +15,5 @@ public interface ShopPool {
     void setRegion(Player player, String shopUID, ProtectedRegion region);
     ArrayList<Shop> getShopList();
 
-    void setName(String currentUID, String newUID);
+    void setName(Player player, String currentID, String newID);
 }

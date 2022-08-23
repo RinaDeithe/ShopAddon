@@ -122,7 +122,17 @@ public class ShopPoolGuard implements ShopPool{
     }
 
     @Override
-    public void setName(String currentUID, String newUID) {
+    public void setName(Player player, String currentID, String newID) {
+        ArrayList<Shop> list = dataModel.getShopList();
 
+        for (Shop index : list) {
+            if (index.getShopUID().equals(currentID)) {
+                Feedback.INSTANCE.shopRenamed(newID);
+                executor.setName(player, currentID, newID);
+                return;
+            }
+        }
+
+        Feedback.INSTANCE.shopNotFound(player);
     }
 }

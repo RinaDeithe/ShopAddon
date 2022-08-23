@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public interface DataModel {
     void createShop(Shop shop);
     Shop getShop(String shopUID);
-
-    void resetInactive(Player player);
-    void addInactive();
     ArrayList<Shop> getShopList();
 
     void removeShop(String shopUID);

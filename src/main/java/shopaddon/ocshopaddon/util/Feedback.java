@@ -41,4 +41,7 @@ public enum Feedback {
 
     public void notEnoughCash(Player player) {
     }
+
+    public void shopRenamed(String newID) {
+    }
 }

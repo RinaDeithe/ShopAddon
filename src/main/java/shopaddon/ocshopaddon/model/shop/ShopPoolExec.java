@@ -73,4 +73,12 @@ public class ShopPoolExec implements ShopPool{
     public ArrayList<Shop> getShopList() {
         return dataModel.getShopList();
     }
+
+    @Override
+    public void setName(Player player, String currentID, String newID) {
+        Shop shop = dataModel.getShop(currentID);
+        shop.setShopName(newID);
+
+        dataModel.updateShop(shop);
+    }
 }

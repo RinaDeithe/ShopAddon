@@ -58,7 +58,7 @@ public class ShopManager implements ShopModel{
     }
 
     @Override
-    public void setName(Player player, String currentUID, String newUID) {
-        pool.setName(currentUID, newUID);
+    public void setName(Player player, String currentID, String newID) {
+        pool.setName(player, currentID, newID);
     }
 }

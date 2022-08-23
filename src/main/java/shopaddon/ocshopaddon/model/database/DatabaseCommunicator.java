@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class DatabaseCommunicator implements DataModel {
 
-    private Connection connection;
+    private static Connection connection;
 
     public DatabaseCommunicator(Connection connection) {
         try {
-            this.connection = connection;
+            DatabaseCommunicator.connection = connection;
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,8 +74,7 @@ public class DatabaseCommunicator implements DataModel {
         return shop;
     }
 
-    @Override
-    public void resetInactive(Player player) {
+    private static void resetInactive(Player player) {
         try {
 
             final String RESET_DAYS =
@@ -92,8 +91,7 @@ public class DatabaseCommunicator implements DataModel {
 
     }
 
-    @Override
-    public void addInactive() {
+    public static void addInactive() {
         try {
 
             final String INCREMENT_DAYS = "update shopaddon.player set inactive_days = inactive_days + 1;";
@@ -106,6 +104,48 @@ public class DatabaseCommunicator implements DataModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void checkPlayer(Player player) {
+        ArrayList<String> uuidList = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = connection.prepareStatement("""
+                select * from shopaddon.player;
+                """).executeQuery();
+
+            while (resultSet.next()) {
+                uuidList.add(resultSet.getString("uuid"));
+            }
+
+            if (!(uuidList.contains(player.getUniqueId().toString()))) {
+                addPlayer(player);
+            }
+            else
+                resetInactive(player);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void addPlayer(Player player) {
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement("""
+                    insert into shopaddon.player(uuid)
+                    values (%s);
+                    """.formatted(player.getUniqueId().toString()));
+
+            stmt.executeUpdate();
+
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
