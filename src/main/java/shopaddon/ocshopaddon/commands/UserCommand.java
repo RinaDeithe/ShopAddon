@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import shopaddon.ocshopaddon.OcShopAddon;
 import shopaddon.ocshopaddon.model.shop.Shop;
 import shopaddon.ocshopaddon.model.shop.ShopModel;
 import shopaddon.ocshopaddon.util.Feedback;

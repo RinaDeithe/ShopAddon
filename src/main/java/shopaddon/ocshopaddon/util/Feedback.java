@@ -1,12 +1,11 @@
 package shopaddon.ocshopaddon.util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public enum Feedback {
     INSTANCE;
 
-    private final String PREFIX = "§8[§7OC§8]§f ";
+    private final String PREFIX = "§6[§eOC§6]§7 ";
 
     public void shopBought(Player player, String string) {
         player.sendMessage(PREFIX + "Successfully bought a shop");
@@ -36,10 +35,6 @@ public enum Feedback {
         player.sendMessage(PREFIX + "Added new owner.");
     }
 
-    public void shopRegionSet(Player player) {
-        player.sendMessage(PREFIX + "Added new region to shop.");
-    }
-
     public void notEnoughCash(Player player) {
         player.sendMessage(PREFIX + "Get back when you have more cash.");
     }
@@ -65,8 +60,14 @@ public enum Feedback {
     }
 
     public void shopBelongsToOthers(Player player) {
+        player.sendMessage(PREFIX + "Shop belongs to someone else.");
     }
 
 	public void shopReset(Player player) {
+        player.sendMessage(PREFIX + "Resetting expired shops.\nYou might want to empty them.");
 	}
+
+    public void regionNotFound(Player player) {
+        player.sendMessage(PREFIX + "Region not found.");
+    }
 }

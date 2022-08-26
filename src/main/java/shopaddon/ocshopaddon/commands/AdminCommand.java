@@ -1,5 +1,6 @@
 package shopaddon.ocshopaddon.commands;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -96,6 +97,8 @@ public class AdminCommand {
 
 		if (shop == null)
 			Feedback.INSTANCE.shopNotFound(player);
+		else if (newOwner == null)
+			Feedback.INSTANCE.playerNotFound(player);
 		else {
 			shop.setOwnerUUID(newOwner.getUniqueId().toString());
 
@@ -112,13 +115,18 @@ public class AdminCommand {
 
 	private boolean createShop(Player player, String shopUID) {
 
-		Shop shop = new Shop(RegionHandler.getRegion(shopUID));
+		ProtectedRegion region = RegionHandler.getRegion(shopUID);
 
-		for (Shop index : dataModel.getShopList()) {
-			if (index.getShopUID().equalsIgnoreCase(shopUID)) {
-				Feedback.INSTANCE.ShopAlreadyExists(player);
-				return false;
-			}
+		if (region == null) {
+			Feedback.INSTANCE.regionNotFound(player);
+			return false;
+		}
+
+		Shop shop = new Shop(region);
+
+		if (!(dataModel.getShop(shopUID) == null)) {
+			Feedback.INSTANCE.ShopAlreadyExists(player);
+			return false;
 		}
 
 		dataModel.createShop(shop);
@@ -130,11 +138,9 @@ public class AdminCommand {
 
 	private boolean removeShop(Player player, String shopUID) {
 
-		for (Shop index : dataModel.getShopList()) {
-			if (!index.getShopUID().equalsIgnoreCase(shopUID)) {
-				Feedback.INSTANCE.shopNotFound(player);
-				return false;
-			}
+		if (dataModel.getShop(shopUID) == null) {
+			Feedback.INSTANCE.shopNotFound(player);
+			return false;
 		}
 
 		dataModel.removeShop(shopUID);

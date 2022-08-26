@@ -31,7 +31,7 @@ commands:
     usage: /<command> <shopUID>
   addMember:
     description: Commands for users.
-    usage: /<command> <shopUID>
+    usage: /<command> <shopUID> <Player>
   viewShops:
     description: Commands for users.
     usage: /<command>
