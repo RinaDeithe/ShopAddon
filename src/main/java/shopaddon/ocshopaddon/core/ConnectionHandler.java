@@ -15,7 +15,7 @@ public class ConnectionHandler {
     private static Connection connection;
     public static String adress = "135.148.53.116";
     public static String port = "5432";
-    public static String user = "postgres";
+    public static String user = "TwiddlingRush";
     public static String pass = "fhurybsfnejifh34729d";
     public static String dataBase = "postgres";
 
@@ -24,30 +24,26 @@ public class ConnectionHandler {
             synchronized (lock) {
                 if (instance == null) {
                     instance = new ConnectionHandler();
+
+                    try {
+                        Class.forName("org.postgresql.Driver");
+
+                        connection = DriverManager.getConnection("jdbc:postgresql://" + adress + ":" + port + "/" + dataBase,user ,pass);
+
+                        initialiseDatabase();
+
+                    } catch (ClassNotFoundException | SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
         return instance;
     }
 
-    private ConnectionHandler() {
-        connect();
-    }
+    private ConnectionHandler() {}
 
-    public void connect() {
-        try {
-            Class.forName("org.postgresql.Driver");
-
-            connection = DriverManager.getConnection("jdbc:postgresql://" + adress + ":" + port + "/" + dataBase,user ,pass);
-
-            initialiseDatabase();
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void closeConnection() {
+    public void closeConnection() {
         try {
             connection.close();
         } catch (SQLException e) {

@@ -1,6 +1,7 @@
 package shopaddon.ocshopaddon.commands;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,47 +32,56 @@ public class UserCommand {
         } else
             player = (Player) commandSender;
 
+        if (strings.length < 1)
+            return false;
+        else if (strings[0].equalsIgnoreCase("view")) {
+            getShops(player);
+            return true;
+        }
+
         if (strings.length < 2)
             return false;
-        else if (strings[1].equals("view")) {
-            getShops(player);
+        else if (strings[0].equalsIgnoreCase("buy")) {
+            buy(player, strings);
+            return true;
+        } else if (strings[0].equalsIgnoreCase("sell")) {
+            sell(player, strings);
             return true;
         }
 
         if (strings.length < 3)
             return false;
-        else if (strings[1].equals("buy")) {
-            buy(player, strings);
-            return true;
-        } else if (strings[1].equals("sell")) {
-            sell(player, strings);
+        else if (strings[0].equalsIgnoreCase("rename")) {
+            setName(player, strings);
             return true;
         }
-
-        if (strings.length < 4)
-            return false;
-        else if (strings[1].equals("rename")) {
-            setName(player, strings);
+        else if (strings[0].equalsIgnoreCase("addmember")) {
+            addmember(player, strings);
             return true;
         }
         return false;
     }
 
+    private void addmember(Player player, String[] strings) {
+
+        model.addMember(player, strings[1], Bukkit.getPlayer(strings[2]));
+    }
+
     public void buy(Player player, String[] strings) {
         if (econ.getBalance(player) > price) {
             econ.withdrawPlayer(player, price);
-            model.setOwner(strings[2], player);
+            model.setOwner(strings[1], player);
         } else
             Feedback.INSTANCE.notEnoughCash(player);
     }
 
     public void sell(Player player, String[] strings) {
-        model.removeOwner(player, strings[2]);
+        model.removeOwner(player, strings[1]);
         econ.depositPlayer(player, (price * 3/4));
     }
 
     public void setName(Player player, String[] strings) {
-        model.setName(player, strings[2], strings[3]);
+        model.setName(player, strings[1], strings[2]);
     }
 
     public void getShops(Player player) {

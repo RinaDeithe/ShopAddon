@@ -21,4 +21,6 @@ public interface ShopModel {
     void setName(Player player, String currentUID, String newUID);
 
     void resetShops(Player player);
+
+    void addMember(Player owner, String shopUID, Player newMember);
 }

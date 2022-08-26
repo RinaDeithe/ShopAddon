@@ -18,4 +18,6 @@ public interface ShopPool {
     void setName(Player player, String currentID, String newID);
 
     void resetShops(Player player);
+
+    void addMember(Player owner, String shopUID, Player newMember);
 }

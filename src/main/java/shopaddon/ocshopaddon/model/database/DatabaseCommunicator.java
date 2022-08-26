@@ -60,7 +60,7 @@ public class DatabaseCommunicator implements DataModel {
 
             while (resultSet.next()) {
                 shop = new Shop(
-                        RegionHandler.getRegion(resultSet.getString("shop_name")),
+                        RegionHandler.getRegion(resultSet.getString("shop_uid")),
                         resultSet.getString("owner"),
                         resultSet.getString("shop_nick")
                 );
@@ -133,9 +133,11 @@ public class DatabaseCommunicator implements DataModel {
 
         try {
             PreparedStatement stmt = connection.prepareStatement("""
-                    insert into shopaddon.player(uuid, inactive_days)
-                    values (%s, 0);
-                    """.formatted(player.getUniqueId().toString()));
+                    insert into shopaddon.player(uuid)
+                    values (?);
+                    """);
+
+            stmt.setString(1, player.getUniqueId().toString());
 
             stmt.executeUpdate();
 
@@ -162,7 +164,7 @@ public class DatabaseCommunicator implements DataModel {
 
             while (resultSet.next()) {
                 shopList.add(new Shop(
-                        RegionHandler.getRegion(resultSet.getString("shop_name")),
+                        RegionHandler.getRegion(resultSet.getString("shop_uid")),
                         resultSet.getString("owner"),
                         resultSet.getString("shop_nick")
                 ));

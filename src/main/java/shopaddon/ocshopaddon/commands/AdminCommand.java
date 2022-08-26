@@ -77,5 +77,5 @@ public class AdminCommand {
 
     private void createShop(Player player, String[] strings) {
         shopModel.createShop(player, strings[1]);
-    }
+    }///adadm
 }

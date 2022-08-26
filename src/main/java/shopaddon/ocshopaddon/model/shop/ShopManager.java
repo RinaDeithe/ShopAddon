@@ -66,4 +66,9 @@ public class ShopManager implements ShopModel{
     public void resetShops(Player player) {
         pool.resetShops(player);
     }
+
+    @Override
+    public void addMember(Player owner, String shopUID, Player newMember) {
+        pool.addMember(owner, shopUID, newMember);
+    }
 }

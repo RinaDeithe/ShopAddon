@@ -1,14 +1,16 @@
 package shopaddon.ocshopaddon.model.shop;
 
+import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Shop {
 
     private ProtectedRegion region;
-    private final String UID;
+    private String UID;
     private String shopName;
     private String ownerUUID;
     private final ArrayList<String> members;
@@ -18,6 +20,7 @@ public class Shop {
         members = new ArrayList<>();
         ownerUUID = "server";
         this.region = region;
+        addMembers();
     }
 
     public Shop(ProtectedRegion region, String ownerUUID, String shopName) {
@@ -26,6 +29,16 @@ public class Shop {
         this.region = region;
         this.ownerUUID = ownerUUID;
         this.shopName = shopName;
+        addMembers();
+    }
+
+    private void addMembers() {
+        DefaultDomain regionMembers = region.getMembers();
+        for (String index : members) {
+            regionMembers.addPlayer(UUID.fromString(index));
+        }
+        if (!ownerUUID.equalsIgnoreCase("server"))
+            regionMembers.addPlayer(UUID.fromString(ownerUUID));
     }
 
     public void setShopName(String newName) {
@@ -50,5 +63,6 @@ public class Shop {
 
     public void setRegion(ProtectedRegion region) {
         this.region = region;
+        this.UID = region.getId();
     }
 }
