@@ -33,7 +33,7 @@ public class DatabaseCommunicator implements DataModel {
             PreparedStatement stmt = connection.prepareStatement(CREATE_SHOP);
 
             stmt.setString(1, shop.getShopUID());
-            stmt.setString(2, shop.getShopName());
+            stmt.setString(2, shop.getShopNick());
             stmt.setString(3, "server");
 
             stmt.executeUpdate();
@@ -206,7 +206,7 @@ public class DatabaseCommunicator implements DataModel {
                 owner = '%s'
             where
                 shop_uid = '%s';
-            """.formatted(shop.getShopName(), shop.getOwnerUUID(), shop.getShopUID());
+            """.formatted(shop.getShopNick(), shop.getOwnerUUID(), shop.getShopUID());
 
         try {
 

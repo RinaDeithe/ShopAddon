@@ -4,14 +4,46 @@ main: shopaddon.ocshopaddon.OcShopAddon
 api-version: 1.19
 prefix: ShopAddon
 commands:
-  admin:
-    description: Commands for admins
-    permission: admin
+  createShop:
+    description: Creates a shop at input region.
+    permission: oc.admin
     permission-message: Bugger off
-    usage: /<command> [create/remove/addregion] (region)
-  shop:
+    usage: /<command> <shopUID>
+  removeShop:
+    description: Removes shop from region.
+    permission: oc.admin
+    permission-message: Bugger off
+    usage: /<command> <shopUID>
+  removeExpired:
+    description: Force sells all expired shops.
+    permission: oc.admin
+    permission-message: Bugger off
+    usage: /<command>
+  setOwner:
+    description: Sets owner for input shop.
+    permission: oc.admin
+    permission-message: Bugger off
+    usage: /<command> <shopUID> <playername>
+  removeOwner:
+    description: ForceFully removes an owner from a shop.
+    permission: oc.admin
+    permission-message: Bugger off
+    usage: /<command> <shopUID>
+  addMember:
     description: Commands for users.
-    usage: /<command> [buy/sell/rename/show]
+    usage: /<command> <shopUID>
+  viewShops:
+    description: Commands for users.
+    usage: /<command>
+  buyShop:
+    description: Commands for users.
+    usage: /<command> <shopUID>
+  sellShop:
+    description: Commands for users.
+    usage: /<command> <shopUID>
+  setShopNick:
+    description: Commands for users.
+    usage: /<command> <shopUID> <shop Nick>
 permissions:
   admin:
     description: Fuck off

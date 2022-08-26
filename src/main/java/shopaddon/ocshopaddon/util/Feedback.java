@@ -1,13 +1,14 @@
 package shopaddon.ocshopaddon.util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public enum Feedback {
     INSTANCE;
 
-    private final String PREFIX = "[OC] ";
+    private final String PREFIX = "§8[§7OC§8]§f ";
 
-    public void shopBought(Player player) {
+    public void shopBought(Player player, String string) {
         player.sendMessage(PREFIX + "Successfully bought a shop");
     }
 
@@ -44,6 +45,28 @@ public enum Feedback {
     }
 
     public void shopRenamed(Player player, String newID) {
-        player.sendMessage(PREFIX + "Renamed shop to " + newID);
+        player.sendMessage(PREFIX + "Renamed shop to " + newID + ".");
     }
+
+    public void memberAdded(Player player) {
+        player.sendMessage(PREFIX + "Member added.");
+    }
+
+    public void notOwnerOfShop(Player player) {
+        player.sendMessage(PREFIX + "You don't own this shop.");
+    }
+
+    public void memberAlreadyAdded(Player player) {
+        player.sendMessage(PREFIX + "Member already added.");
+    }
+
+    public void playerNotFound(Player player) {
+        player.sendMessage(PREFIX + "Player not found.");
+    }
+
+    public void shopBelongsToOthers(Player player) {
+    }
+
+	public void shopReset(Player player) {
+	}
 }
