@@ -1,81 +1,154 @@
 package shopaddon.ocshopaddon.commands;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import shopaddon.ocshopaddon.core.RegionHandler;
+import shopaddon.ocshopaddon.model.database.DataModel;
 import shopaddon.ocshopaddon.model.shop.Shop;
-import shopaddon.ocshopaddon.model.shop.ShopModel;
-
-import java.util.ArrayList;
+import shopaddon.ocshopaddon.util.Feedback;
 
 public class AdminCommand {
 
-    private final ShopModel shopModel;
+	private final DataModel dataModel;
 
-    public AdminCommand(ShopModel shopModel) {
+	public AdminCommand(DataModel dataModel) {
 
-        this.shopModel = shopModel;
-    }
+		this.dataModel = dataModel;
+	}
 
-    public boolean commands(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Command can only be executed by a player.");
-            return true;
-        }
+	public boolean removeOwner(CommandSender commandSender, Command command, String s, String[] strings) {
+		if (!(strings.length == 1 && commandSender instanceof Player))
+			return false;
 
-        Player admin = (Player) commandSender;
+		Player player = (Player) commandSender;
 
-        if (strings.length < 2) {
-            admin.sendMessage("You need a bit more on your command");
-            return false;
-        }
+		return removeOwner(player, strings[0]);
+	}
 
-        if (strings[0].equalsIgnoreCase("remove")) {
-            removeShop(admin, strings);
-            return true;
-        }
-        else if (strings[0].equalsIgnoreCase("create")){
-            createShop(admin, strings);
-            return true;
-        }
-        else if (strings[0].equalsIgnoreCase("getShops")) {
-            StringBuilder returnString = new StringBuilder("Current shops in use:");
-            ArrayList<Shop> shopList = shopModel.getShopList();
+	public boolean setOwner(CommandSender commandSender, Command command, String s, String[] strings) {
+		if (!(strings.length == 2 && commandSender instanceof Player))
+			return false;
 
-            for (Shop index : shopList) {
-                returnString.append("\n").append(index.getShopUID());
-            }
+		Player player = (Player) commandSender;
 
-            admin.sendMessage(returnString.toString());
-            return true;
-        }
-        else if (strings[0].equalsIgnoreCase("expired")) {
-            resetShops(admin);
-            return true;
-        }
-        else if (strings[0].equalsIgnoreCase("setregion") && strings.length > 2) {
-            setRegion(admin, strings);
-            return true;
-        }
-        else
-            return false;
+		return setOwner(player, strings[0], Bukkit.getPlayer(strings[1]));
 
-    }
+	}
 
-    private void resetShops(Player player) {
-        shopModel.resetShops(player);
-    }
+	public boolean createShop(CommandSender commandSender, Command command, String s, String[] strings) {
+		if (!(strings.length == 1 && commandSender instanceof Player))
+			return false;
 
-    private void setRegion(Player player, String[] strings) {
-        shopModel.setRegion(player, strings[1] ,RegionHandler.getRegion(strings[2]));
-    }
+		Player player = (Player) commandSender;
 
-    private void removeShop(Player player, String[] strings) {
-        shopModel.removeShop(player, strings[1]);
-    }
+		return createShop(player, strings[0]);
 
-    private void createShop(Player player, String[] strings) {
-        shopModel.createShop(player, strings[1]);
-    }
+	}
+
+	public boolean removeShop(CommandSender commandSender, Command command, String s, String[] strings) {
+		if (!(strings.length == 1 && commandSender instanceof Player))
+			return false;
+
+		Player player = (Player) commandSender;
+
+		return removeShop(player, strings[0]);
+
+	}
+
+	public boolean removeExpired(CommandSender commandSender, Command command, String s, String[] strings) {
+		if (!(strings.length == 1 && commandSender instanceof Player))
+			return false;
+
+		Player player = (Player) commandSender;
+
+		return removeExpired(player);
+	}
+
+	private boolean removeExpired(Player player) {
+
+		Feedback.INSTANCE.shopReset(player);
+		dataModel.resetShops();
+		return true;
+	}
+
+	private boolean removeOwner(Player player, String shopUID) {
+
+		Shop shop = dataModel.getShop(shopUID);
+
+		if (shop == null)
+			Feedback.INSTANCE.shopNotFound(player);
+		else {
+			shop.setOwnerUUID("server");
+
+			dataModel.updateShop(shop);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean setOwner(Player player, String shopUID, Player newOwner) {
+
+		Shop shop = dataModel.getShop(shopUID);
+
+		if (shop == null)
+			Feedback.INSTANCE.shopNotFound(player);
+		else if (newOwner == null)
+			Feedback.INSTANCE.playerNotFound(player);
+		else {
+			shop.setOwnerUUID(newOwner.getUniqueId().toString());
+
+			dataModel.updateShop(shop);
+
+			Feedback.INSTANCE.shopOwnerAdded(player);
+
+			return true;
+		}
+
+		return false;
+
+	}
+
+	private boolean createShop(Player player, String shopUID) {
+
+		ProtectedRegion region = RegionHandler.getRegion(shopUID);
+
+		if (region == null) {
+			Feedback.INSTANCE.regionNotFound(player);
+			return false;
+		}
+
+		Shop shop = new Shop(region);
+
+		if (!(dataModel.getShop(shopUID) == null)) {
+			Feedback.INSTANCE.ShopAlreadyExists(player);
+			return false;
+		}
+
+		dataModel.createShop(shop);
+		Feedback.INSTANCE.shopCreated(player);
+
+		return true;
+
+	}
+
+	private boolean removeShop(Player player, String shopUID) {
+
+		if (dataModel.getShop(shopUID) == null) {
+			Feedback.INSTANCE.shopNotFound(player);
+			return false;
+		}
+
+		dataModel.removeShop(shopUID);
+		Feedback.INSTANCE.shopRemoved(player);
+
+		return true;
+
+	}
+
+
 }

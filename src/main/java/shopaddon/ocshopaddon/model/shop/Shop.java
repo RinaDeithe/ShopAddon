@@ -1,35 +1,53 @@
 package shopaddon.ocshopaddon.model.shop;
 
+import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Shop {
 
     private ProtectedRegion region;
-    private final String UID;
-    private String shopName;
+    private String UID;
+    private String shopNick;
     private String ownerUUID;
-    private final ArrayList<String> members;
+    private final ArrayList<String> memberUUIDList;
 
     public Shop(ProtectedRegion region) {
         this.UID = region.getId();
-        members = new ArrayList<>();
+        memberUUIDList = new ArrayList<>();
         ownerUUID = "server";
         this.region = region;
+        updateRegion();
     }
 
     public Shop(ProtectedRegion region, String ownerUUID, String shopName) {
         this.UID = region.getId();
-        members = new ArrayList<>(region.getMembers().getPlayers());
+        memberUUIDList = new ArrayList<>(region.getMembers().getPlayers());
         this.region = region;
         this.ownerUUID = ownerUUID;
-        this.shopName = shopName;
+        this.shopNick = shopName;
+        updateRegion();
     }
 
-    public void setShopName(String newName) {
-        shopName = newName;
+    private void updateRegion() {
+        DefaultDomain regionMembers = region.getMembers();
+        for (String index : memberUUIDList) {
+            regionMembers.addPlayer(UUID.fromString(index));
+        }
+        if (!ownerUUID.equalsIgnoreCase("server"))
+            regionMembers.addPlayer(UUID.fromString(ownerUUID));
+    }
+
+    public void addMember(Player newMember) {
+        memberUUIDList.add(newMember.getUniqueId().toString());
+        updateRegion();
+    }
+
+    public void setShopNick(String newName) {
+        shopNick = newName;
     }
 
     public String getShopUID() {
@@ -40,8 +58,8 @@ public class Shop {
         return ownerUUID;
     }
 
-    public String getShopName() {
-        return shopName;
+    public String getShopNick() {
+        return shopNick;
     }
 
     public void setOwnerUUID(String ownerUUID) {
@@ -50,5 +68,10 @@ public class Shop {
 
     public void setRegion(ProtectedRegion region) {
         this.region = region;
+        this.UID = region.getId();
+    }
+
+    public ArrayList<String> getMemberUUIDList() {
+        return memberUUIDList;
     }
 }

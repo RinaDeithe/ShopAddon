@@ -8,8 +8,6 @@ import shopaddon.ocshopaddon.commands.UserCommand;
 public class CommandHandler {
 
     private static final CommandHandler instance;
-    private static AdminCommand adminCommand;
-    private static UserCommand userCommand;
 
     static {
         instance = new CommandHandler();
@@ -19,12 +17,22 @@ public class CommandHandler {
 
     public static void init(OcShopAddon plugin, Economy econ) {
 
-        adminCommand = new AdminCommand(ModelFactory.getInstance().getShopModel());
-        userCommand = new UserCommand(ModelFactory.getInstance().getShopModel(), econ);
+        AdminCommand adminCommand = new AdminCommand(ModelFactory.getInstance().getDataModel());
+        UserCommand userCommand = new UserCommand(ModelFactory.getInstance().getShopModel(), econ);
 
-        plugin.getCommand("admin").setExecutor(adminCommand::commands);
+        //ADMIN COMMANDS
+        plugin.getCommand("createShop").setExecutor(adminCommand::createShop);
+        plugin.getCommand("removeShop").setExecutor(adminCommand::removeShop);
+        plugin.getCommand("removeExpired").setExecutor(adminCommand::removeExpired);
+        plugin.getCommand("setOwner").setExecutor(adminCommand::setOwner);
+        plugin.getCommand("removeOwner").setExecutor(adminCommand::removeOwner);
 
-        plugin.getCommand("shop").setExecutor(userCommand::shop);
+        //USER COMMANDS
+        plugin.getCommand("addMember").setExecutor(userCommand::addMember);
+        plugin.getCommand("viewShops").setExecutor(userCommand::view);
+        plugin.getCommand("buyShop").setExecutor(userCommand::buy);
+        plugin.getCommand("sellShop").setExecutor(userCommand::sell);
+        plugin.getCommand("setShopNick").setExecutor(userCommand::setNick);
 
     }
 

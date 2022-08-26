@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 public enum Feedback {
     INSTANCE;
 
-    private final String PREFIX = "[OC] ";
+    private final String PREFIX = "§6[§eOC§6]§7 ";
 
-    public void shopBought(Player player) {
+    public void shopBought(Player player, String string) {
         player.sendMessage(PREFIX + "Successfully bought a shop");
     }
 
@@ -35,15 +35,39 @@ public enum Feedback {
         player.sendMessage(PREFIX + "Added new owner.");
     }
 
-    public void shopRegionSet(Player player) {
-        player.sendMessage(PREFIX + "Added new region to shop.");
-    }
-
     public void notEnoughCash(Player player) {
         player.sendMessage(PREFIX + "Get back when you have more cash.");
     }
 
     public void shopRenamed(Player player, String newID) {
-        player.sendMessage(PREFIX + "Renamed shop to " + newID);
+        player.sendMessage(PREFIX + "Renamed shop to " + newID + ".");
+    }
+
+    public void memberAdded(Player player) {
+        player.sendMessage(PREFIX + "Member added.");
+    }
+
+    public void notOwnerOfShop(Player player) {
+        player.sendMessage(PREFIX + "You don't own this shop.");
+    }
+
+    public void memberAlreadyAdded(Player player) {
+        player.sendMessage(PREFIX + "Member already added.");
+    }
+
+    public void playerNotFound(Player player) {
+        player.sendMessage(PREFIX + "Player not found.");
+    }
+
+    public void shopBelongsToOthers(Player player) {
+        player.sendMessage(PREFIX + "Shop belongs to someone else.");
+    }
+
+	public void shopReset(Player player) {
+        player.sendMessage(PREFIX + "Resetting expired shops.\nYou might want to empty them.");
+	}
+
+    public void regionNotFound(Player player) {
+        player.sendMessage(PREFIX + "Region not found.");
     }
 }
