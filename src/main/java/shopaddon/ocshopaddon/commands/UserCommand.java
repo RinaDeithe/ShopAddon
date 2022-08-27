@@ -2,15 +2,16 @@ package shopaddon.ocshopaddon.commands;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import shopaddon.ocshopaddon.OcShopAddon;
 import shopaddon.ocshopaddon.model.shop.Shop;
 import shopaddon.ocshopaddon.model.shop.ShopModel;
 import shopaddon.ocshopaddon.util.Feedback;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class UserCommand {
 
@@ -34,6 +35,17 @@ public class UserCommand {
             player = (Player) commandSender;
 
         return addMember(player, strings[0], Bukkit.getPlayer(strings[1]));
+    }
+
+    public boolean removeMember(CommandSender commandSender, Command command, String s, String[] strings) {
+        Player player;
+
+        if (!(commandSender instanceof Player && strings.length == 2)) {
+            return false;
+        } else
+            player = (Player) commandSender;
+
+        return removeMember(player, strings[0], Bukkit.getPlayer(strings[1]));
     }
 
     public boolean buy(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -80,6 +92,30 @@ public class UserCommand {
 
         player.sendMessage(view());
         return true;
+    }
+
+    public boolean viewOwn(CommandSender commandSender, Command command, String s, String[] strings) {
+        Player player;
+
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("Only players allowed");
+            return false;
+        } else
+            player = (Player) commandSender;
+
+        player.sendMessage(viewOwn(player));
+        return true;
+    }
+
+    public boolean viewShop(CommandSender commandSender, Command command, String s, String[] strings) {
+        Player player;
+
+        if (!(commandSender instanceof Player && strings.length == 1)) {
+            return false;
+        } else
+            player = (Player) commandSender;
+
+        return viewShop(player, strings[0]);
     }
 
     //Command Conds
@@ -170,83 +206,63 @@ public class UserCommand {
         return false;
     }
 
-    /*
+    private boolean removeMember(Player player, String shopUID, Player member) {
+        Shop shop = model.getShop(shopUID);
 
-    public boolean shop(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (shop == null) {
+            Feedback.INSTANCE.shopNotFound(player);
+        } else if (!(shop.getOwnerUUID().equals(player.getUniqueId().toString()))) {
+            Feedback.INSTANCE.notOwnerOfShop(player);
+        } else if (member == null) {
+            Feedback.INSTANCE.playerNotFound(player);
+        } else if (!shop.getMemberUUIDList().contains(member.getUniqueId().toString())) {
+            Feedback.INSTANCE.memberNotPartOfShop(player);
+        } else {
+            shop.removeMember(member);
 
-        Player player;
-
-        if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Only players allowed");
-            return false;
-        } else
-            player = (Player) commandSender;
-
-        if (strings.length < 1)
-            return false;
-        else if (strings[0].equalsIgnoreCase("view")) {
-            getShops(player);
-            return true;
-        }
-
-        if (strings.length < 2)
-            return false;
-        else if (strings[0].equalsIgnoreCase("buy")) {
-            buy(player, strings);
-            return true;
-        } else if (strings[0].equalsIgnoreCase("sell")) {
-            sell(player, strings);
-            return true;
-        }
-
-        if (strings.length < 3)
-            return false;
-        else if (strings[0].equalsIgnoreCase("rename")) {
-            setName(player, strings);
-            return true;
-        }
-        else if (strings[0].equalsIgnoreCase("addmember")) {
-            addmember(player, strings);
+            model.updateShop(shop);
+            Feedback.INSTANCE.memberRemoved(player);
             return true;
         }
         return false;
+
     }
 
-    private void addmember(Player player, String[] strings) {
+    private boolean viewShop(Player player, String shopUID) {
 
-        if (!(Bukkit.getPlayer(strings[2]) == null)) {
-            model.addMember(strings[1], Bukkit.getPlayer(strings[2]));
-            return;
-        }
-        Feedback.INSTANCE.playerNotFound(player);
-    }
-
-    public void buy(Player player, String[] strings) {
-        if (econ.getBalance(player) >= price && !model.hasOwner(strings[1])) {
-            econ.withdrawPlayer(player, price);
-            model.setOwner(strings[1]);
-        } else
-            Feedback.INSTANCE.notEnoughCash(player);
-    }
-
-    public void sell(Player player, String[] strings) {
-        Shop shop = model.getShop(player, strings[1]);
+        Shop shop = model.getShop(shopUID);
 
         if (shop == null) {
-            player.sendMessage("Type in a real shop you fucking trekkie");
-        } else if (shop.getOwnerUUID().equalsIgnoreCase(player.getUniqueId().toString())) {
-            model.removeOwner(player, strings[1]);
-            econ.depositPlayer(player, (price * 3/4));
-            Feedback.INSTANCE.shopSold(player);
+            Feedback.INSTANCE.shopNotFound(player);
+            return false;
+        } else {
+            StringBuilder returnString = new StringBuilder("Shop §6" + shopUID + "§f:");
+
+            returnString.append("\n").append("Shop nick: ").append(shop.getShopNick());
+            returnString.append("\n").append("Owner: ").append(Bukkit.getOfflinePlayer(UUID.fromString(shop.getOwnerUUID())));
+            returnString.append("\n").append("Members: ");
+
+            for (String index : shop.getMemberUUIDList()) {
+                returnString.append("\n    ").append(Bukkit.getOfflinePlayer(UUID.fromString(index)));
+            }
+
+            player.sendMessage(returnString.toString());
+
+            return true;
         }
-        else
-            Feedback.INSTANCE.notOwnerOfShop(player);
     }
 
-    public void setName(Player player, String[] strings) {
-        model.setName(player, strings[1], strings[2]);
-    }
-    */
+    private String viewOwn(Player player) {
 
+        StringBuilder returnString = new StringBuilder("You shops:");
+
+        for (Shop index : model.getShopList(player)) {
+            returnString.append("\n").append(index.getShopNick());
+        }
+
+
+        return returnString.toString();
+
+    }
 
 }

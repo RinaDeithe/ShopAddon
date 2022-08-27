@@ -70,4 +70,10 @@ public enum Feedback {
     public void regionNotFound(Player player) {
         player.sendMessage(PREFIX + "Region not found.");
     }
+
+	public void memberRemoved(Player player) {
+	}
+
+    public void memberNotPartOfShop(Player player) {
+    }
 }

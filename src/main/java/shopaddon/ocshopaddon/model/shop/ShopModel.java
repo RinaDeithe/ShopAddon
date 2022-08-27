@@ -10,4 +10,6 @@ public interface ShopModel {
     ArrayList<Shop> getShopList();
 
     void updateShop(Shop shop);
+
+	ArrayList<Shop> getShopList(Player player);
 }

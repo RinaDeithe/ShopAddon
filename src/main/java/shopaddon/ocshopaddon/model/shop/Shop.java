@@ -74,4 +74,9 @@ public class Shop {
     public ArrayList<String> getMemberUUIDList() {
         return memberUUIDList;
     }
+
+	public void removeMember(Player member) {
+        memberUUIDList.remove(member.getUniqueId().toString());
+        updateRegion();
+	}
 }

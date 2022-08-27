@@ -29,7 +29,10 @@ public class CommandHandler {
 
         //USER COMMANDS
         plugin.getCommand("addMember").setExecutor(userCommand::addMember);
-        plugin.getCommand("viewShops").setExecutor(userCommand::view);
+        plugin.getCommand("removeMember").setExecutor(userCommand::removeMember);
+        plugin.getCommand("viewAll").setExecutor(userCommand::view);
+        plugin.getCommand("viewShop").setExecutor(userCommand::viewShop);
+        plugin.getCommand("viewOwn").setExecutor(userCommand::viewOwn);
         plugin.getCommand("buyShop").setExecutor(userCommand::buy);
         plugin.getCommand("sellShop").setExecutor(userCommand::sell);
         plugin.getCommand("setShopNick").setExecutor(userCommand::setNick);

@@ -5,3 +5,6 @@ postgresql:
   user: #postgres
   password: #123456789
   database: #postgres
+#expireRestarts checks for how many restarts a player has been inactive and auto expires their shop.
+expireRestarts: 30
+allowedShops: 1
